@@ -8,7 +8,10 @@ void Game::initVariables()
 	//Game logic
 	this->endGame = false;
 }
-
+void Game::initPlayer()
+{
+	
+}
 void Game::initWindow()
 {
 	this->videoMode.height = 600;
