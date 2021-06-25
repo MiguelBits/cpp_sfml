@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\tutorial\SFML_C-_Simple_Games-master\SFML_C++_Simple_Games\SFML_C++_Simple_Games\Game 1\Game.cpp" />
-    <ClCompile Include="..\..\tutorial\SFML_C-_Simple_Games-master\SFML_C++_Simple_Games\SFML_C++_Simple_Games\Game 1\main.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\tutorial\SFML_C-_Simple_Games-master\SFML_C++_Simple_Games\SFML_C++_Simple_Games\Game 1\Game.h" />
+    <ClInclude Include="Game.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

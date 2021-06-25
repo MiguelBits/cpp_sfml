@@ -30,8 +30,7 @@ private:
 	sf::Vector2f mousePosView;
 
 	//Resources
-	sf::Font font;
-
+	
 	//Text
 	sf::Text uiText;
 
@@ -40,12 +39,12 @@ private:
 
 
 	//Game objects
-
+	
 
 	//Private functions
 	void initVariables();
 	void initWindow();
-	void initFonts();
+
 
 public:
 	//Constructors / Destructors
@@ -57,11 +56,11 @@ public:
 	const bool getEndGame() const;
 
 	//Functions
-
+	
 	void pollEvents();
 	void updateMousePositions();
 	void update();
 
-
+	
 	void render();
 };

@@ -4,7 +4,7 @@
 void Game::initVariables()
 {
 	this->window = nullptr;
-
+	
 	//Game logic
 	this->endGame = false;
 }
@@ -13,19 +13,12 @@ void Game::initWindow()
 {
 	this->videoMode.height = 600;
 	this->videoMode.width = 800;
-
+	
 	this->window = new sf::RenderWindow(this->videoMode, "Game 1", sf::Style::Titlebar | sf::Style::Close);
 
 	this->window->setFramerateLimit(60);
 }
 
-void Game::initFonts()
-{
-	if (this->font.loadFromFile("Fonts/Dosis-Light.ttf"))
-	{
-		std::cout << "ERROR::GAME::INITFONTS::Failed to load font!" << "\n";
-	}
-}
 
 
 //Constructors / Destructors
@@ -33,7 +26,7 @@ Game::Game()
 {
 	this->initVariables();
 	this->initWindow();
-	this->initFonts();
+
 }
 
 Game::~Game()
@@ -117,6 +110,6 @@ void Game::render()
 	this->window->clear();
 
 	//Draw game objects
-
+	
 	this->window->display();
 }
