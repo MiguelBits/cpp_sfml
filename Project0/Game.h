@@ -10,6 +10,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
+#include "Player.h"
 
 /*
 	Class that acts as the game engine.
@@ -44,6 +45,7 @@ private:
 
 	//Private functions
 	void initVariables();
+	void initPlayer();
 	void initWindow();
 	void initFonts();
 
