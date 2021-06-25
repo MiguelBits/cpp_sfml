@@ -1,4 +1,5 @@
 ﻿  Game.cpp
+  Player.cpp
   main.cpp
   Generating Code...
   Project0.vcxproj -> D:\Projects\C++\2D\cpp_sfml\Project0\Debug\Project0.exe

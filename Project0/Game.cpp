@@ -1,122 +1,67 @@
+#include"stdafx.h"
 #include "Game.h"
-
-//Private functions
-void Game::initVariables()
-{
-	this->window = nullptr;
-	
-	//Game logic
-	this->endGame = false;
-}
 
 void Game::initWindow()
 {
-	this->videoMode.height = 600;
-	this->videoMode.width = 800;
-	
-	this->window = new sf::RenderWindow(this->videoMode, "Not Sonic!", sf::Style::Titlebar | sf::Style::Close);
-
-	this->window->setFramerateLimit(60);
+	this->window.create(sf::VideoMode(800, 600), "Not a Game!", sf::Style::Close | sf::Style::Titlebar);
+	this->window.setFramerateLimit(60);
 }
 
-void Game::initFonts()
+void Game::initPlayer()
 {
-	if (this->font.loadFromFile("Fonts/Dosis-Light.ttf"))
-	{
-		std::cout << "ERROR::GAME::INITFONTS::Failed to load font!" << "\n";
-	}
+	this->player = new Player();
 }
 
-
-//Constructors / Destructors
 Game::Game()
 {
-	this->initVariables();
 	this->initWindow();
-	this->initFonts();
+	this->initPlayer();
 }
 
 Game::~Game()
 {
-	delete this->window;
+	delete this->player;
 }
 
-//Accessors
-const bool Game::running() const
+void Game::updatePlayer()
 {
-	return this->window->isOpen();
-}
-
-const bool Game::getEndGame() const
-{
-	return this->endGame;
-}
-
-//Functions
-
-void Game::pollEvents()
-{
-	//Event polling
-	while (this->window->pollEvent(this->ev))
-	{
-		switch (this->ev.type)
-		{
-		case sf::Event::Closed:
-			this->window->close();
-			break;
-		case sf::Event::KeyPressed:
-			if (this->ev.key.code == sf::Keyboard::Escape)
-				this->window->close();
-			break;
-		}
-	}
-}
-
-void Game::updateMousePositions()
-{
-	/**
-		@ return void
-
-		Updates the mouse positions:
-		- Mouse position relative to window (Vector2i)
-	*/
-
-	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
-	this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
+	this->player->update();
 }
 
 
 void Game::update()
 {
-	this->pollEvents();
-
-	if (this->endGame == false)
+	//Polling window events
+	while (this->window.pollEvent(this->ev))
 	{
-		this->updateMousePositions();
+		if (this->ev.type == sf::Event::Closed)
+			this->window.close();
+		else if (this->ev.type == sf::Event::KeyPressed && this->ev.key.code == sf::Keyboard::Escape)
+			this->window.close();
 
 	}
 
-	//End game condition
-	//if (this->health <= 0)
-		//this->endGame = true;
+	this->updatePlayer();
+
 }
 
+void Game::renderPlayer()
+{
+	this->player->render(this->window);
+}
 
 void Game::render()
 {
-	/**
-		@return void
+	this->window.clear();
 
-		- clear old frame
-		- render objects
-		- display frame in window
+	//Render game
+	this->renderPlayer();
 
-		Renders the game objects.
-	*/
+	this->window.display();
+}
 
-	this->window->clear();
-
-	//Draw game objects
-	
-	this->window->display();
+const sf::RenderWindow& Game::getWindow() const
+{
+	// TODO: insert return statement here
+	return this->window;
 }

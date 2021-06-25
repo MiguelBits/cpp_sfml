@@ -1,23 +1,15 @@
-#include <iostream>
+#include"stdafx.h"
 #include "Game.h"
-
-//using namespace sf;
 
 int main()
 {
-	//Init srand
-	std::srand(static_cast<unsigned>(time(NULL)));
+	srand(static_cast<unsigned>(time(0)));
 
-	//Init Game engine
 	Game game;
 
-	//Game loop
-	while (game.running() && !game.getEndGame())
+	while (game.getWindow().isOpen())
 	{
-		//Update
 		game.update();
-
-		//Render
 		game.render();
 	}
 
