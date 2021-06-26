@@ -1,5 +1,5 @@
 #pragma once
-enum PLAYER_ANIMATION_STATES { IDLE = 0, MOVING_LEFT, MOVING_RIGHT };
+enum PLAYER_ANIMATION_STATES { IDLE = 0, MOVING_LEFT, MOVING_RIGHT, MOVING_UP, MOVING_DOWN};
 class Player
 {
 private:
@@ -35,7 +35,6 @@ public:
 	void resetAnimationTimer();
 	void switchAnimationSide(int side);
 	void updateAnimations();
-	void updateMovement();
 	void update();
 	void render(sf::RenderTarget& target);
 };

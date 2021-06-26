@@ -5,7 +5,7 @@ void Player::initVariables()
 {
 	this->positionX = 550;
 	this->positionY = 300;
-	this->movementSpeed = 10;
+	this->movementSpeed = 5;
 	this->animState = PLAYER_ANIMATION_STATES::IDLE;
 }
 
@@ -23,7 +23,7 @@ void Player::initSprite()
 	this->sprite.setTexture(this->textureSheet);
 
 	//set animation frame from texture
-	this->currentFrame = sf::IntRect(0, 0, 30, 60);
+	this->currentFrame = sf::IntRect(0, 0, 35, 100);
 
 	//Resize the sprite
 	this->sprite.scale(2.0f,2.0f);
@@ -99,15 +99,31 @@ void Player::resetAnimationTimer()
 
 
 void Player::switchAnimationSide(int side)
-{
-	if (side <= 6 && side >= 3) { //3,4,5,6 //LEFT
+{	
+	if (side == 4 || side == 5 ) { //4,5 //LEFT
 		//this->move(-1.f, 0.f);
 		this->animState = PLAYER_ANIMATION_STATES::MOVING_LEFT;
+		cout << "LEFT";
 	}
-	else {
+	else if (side == 3 || side == 4) { //3,4 // DOWN
+		this->animState = PLAYER_ANIMATION_STATES::MOVING_DOWN;
+		cout << "DOWN";
+	}
+	
+	if (side == 1 || side == 8) { //1,8 //RIGHT
 		//this->move(1.f, 0.f);
 		this->animState = PLAYER_ANIMATION_STATES::MOVING_RIGHT;
+		cout << "RIGHT";
 	}
+	else if (side == 6 || side == 7) { //6,7 // UP
+		this->animState = PLAYER_ANIMATION_STATES::MOVING_UP;
+		cout << "UP";
+	}
+	
+	
+
+	
+	
 	
 }
 
@@ -157,6 +173,32 @@ void Player::updateAnimations()
 
 		this->sprite.setScale(-2.f, 2.f);
 		this->sprite.setOrigin(this->sprite.getGlobalBounds().width / 3.f, 0.f);
+	}
+	else if (this->animState == PLAYER_ANIMATION_STATES::MOVING_DOWN)
+	{
+		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.1f || this->getAnimSwitch())
+		{
+			this->currentFrame.top = 190.f;
+			this->currentFrame.left += 50.f;
+			if (this->currentFrame.left > 80.f)
+				this->currentFrame.left = 0;
+
+			this->animationTimer.restart();
+			this->sprite.setTextureRect(this->currentFrame);
+		}
+	}
+	else if (this->animState == PLAYER_ANIMATION_STATES::MOVING_UP)
+	{
+		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.1f || this->getAnimSwitch())
+		{
+			this->currentFrame.top = 100.f;
+			this->currentFrame.left += 50.f;
+			if (this->currentFrame.left > 80.f)
+				this->currentFrame.left = 0;
+
+			this->animationTimer.restart();
+			this->sprite.setTextureRect(this->currentFrame);
+		}
 	}
 	else
 		this->animationTimer.restart();
