@@ -84,17 +84,14 @@ Game::~Game()
 
 void Game::updatePlayer()
 {
-	//Movement Mouse
-	if (this->ev.type == sf::Event::MouseMoved)
-	{
-		calculateMousePlayer();
-	}
 	if (this->ev.type == sf::Event::MouseButtonPressed)
 	{
 		if (this->ev.mouseButton.button == sf::Mouse::Right)
 		{
 			sf::Vector2i localPosition = sf::Mouse::getPosition(this->window);
 			this->player->move(localPosition.x, localPosition.y);
+			//switch animation when click
+			calculateMousePlayer();
 		}
 	}
 	this->player->update();
