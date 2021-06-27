@@ -27,8 +27,7 @@ void Player::initSprite()
 	this->sprite.scale(1.5f,1.5f);
 	
 	this->sprite.setTextureRect(this->currentFrame);
-	//center of screen?
-	//this->sprite.setPosition(this->positionX, this->positionY);
+	
 }
 
 void Player::initAnimations()
@@ -108,6 +107,9 @@ void Player::move(const float dir_x, const float dir_y)
 
 void Player::updatePhysics()
 {
+	//origin to center of object, half pixel size
+	this->sprite.setOrigin(50,50);
+
 	if (movingOn) {
 		this->movementSpeed = 1.0f;
 	}
@@ -157,15 +159,12 @@ void Player::updateAnimations()
 			this->animationTimer.restart();
 			this->sprite.setTextureRect(this->currentFrame);
 		}
-
-		this->sprite.setScale(1.5f, 1.5f);
-		this->sprite.setOrigin(0.f, 0.f);
 	}
 	else if (this->animState == PLAYER_ANIMATION_STATES::MOVING_LEFT)
 	{
 		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.1f || this->getAnimSwitch())
 		{
-			this->currentFrame.top = 200.f;
+			this->currentFrame.top = 300.f;
 			this->currentFrame.left += 100.f;
 			if (this->currentFrame.left > 600.f)
 				this->currentFrame.left = 0;
@@ -173,11 +172,8 @@ void Player::updateAnimations()
 			this->animationTimer.restart();
 			this->sprite.setTextureRect(this->currentFrame);
 
-			this->sprite.setOrigin(this->sprite.getGlobalBounds().width / 3.f, 0.f);
+			
 		}
-
-		this->sprite.setScale(-1.5f, 1.5f);
-		this->sprite.setOrigin(this->sprite.getGlobalBounds().width / 1.5f, 0.f);
 	}
 	else if (this->animState == PLAYER_ANIMATION_STATES::MOVING_DOWN)
 	{
@@ -191,6 +187,7 @@ void Player::updateAnimations()
 			this->animationTimer.restart();
 			this->sprite.setTextureRect(this->currentFrame);
 		}
+		
 	}
 	else if (this->animState == PLAYER_ANIMATION_STATES::MOVING_UP)
 	{
@@ -240,7 +237,7 @@ void Player::update()
 void Player::render(sf::RenderTarget& target)
 {
 	target.draw(this->sprite);
-
+	
 	//CIRCLE FOR FIXING POSITION
 	//sf::CircleShape circ;
 	//circ.setFillColor(sf::Color::Red);
