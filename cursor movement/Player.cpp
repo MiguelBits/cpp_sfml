@@ -5,6 +5,8 @@ void Player::initVariables()
 {
 	this->movingOn = false;
 	this->animState = PLAYER_ANIMATION_STATES::IDLE;
+	this->pixelSize.x = 100;
+	this->pixelSize.y = 100;
 }
 
 void Player::initTexture()
@@ -21,7 +23,7 @@ void Player::initSprite()
 	this->sprite.setTexture(this->textureSheet);
 
 	//set animation frame from texture
-	this->currentFrame = sf::IntRect(0, 0, 100, 100);
+	this->currentFrame = sf::IntRect(0, 0, this->pixelSize.x, this->pixelSize.y);
 
 	//Resize the sprite
 	this->sprite.scale(1.5f,1.5f);
@@ -42,15 +44,19 @@ void Player::initPhysics()
 	this->positionY = 400;	
 
 }
-Player::Player()
+Player::Player(int screenW, int screenH)
 {
+	this->screenW = screenW;
+	this->screenH = screenH;
+
 	this->initVariables();
 	this->initTexture();
 	this->initSprite();
 	this->initAnimations();
 	this->initPhysics();
 
-	this->sprite.setPosition(this->positionX, this->positionY);
+	//spawn point
+	this->sprite.setPosition(this->pixelSize.x+200, this->screenH - this->pixelSize.y - 200);
 
 }
 
@@ -108,27 +114,46 @@ void Player::move(const float dir_x, const float dir_y)
 void Player::updatePhysics()
 {
 	//origin to center of object, half pixel size
-	this->sprite.setOrigin(50,50);
+	this->sprite.setOrigin(this->pixelSize.x/2, this->pixelSize.y/2);
+
+	//movement physics
+	if (this->dir_x == getPosition().x && this->dir_y == getPosition().y) this->movingOn = false;
 
 	if (movingOn) {
 		this->movementSpeed = 1.0f;
 	}
 	else this->movementSpeed = 0;
 
-	if (this->dir_y > getPosition().y) {
+	if (this->dir_y > getPosition().y) { //up
 		this->sprite.move(0,movementSpeed);
 	}
-	else if (this->dir_y < getPosition().y) {
+	else if (this->dir_y < getPosition().y) { //down
 		this->sprite.move(0, -movementSpeed);
 	}
-	if (this->dir_x > getPosition().x) {
+	if (this->dir_x > getPosition().x) {//right
 		this->sprite.move(movementSpeed,0);
 	}
-	else if (this->dir_x < getPosition().x) {
+	else if (this->dir_x < getPosition().x) {//left
 		this->sprite.move(-movementSpeed,0);
 	}
-	
-	if (this->dir_x == getPosition().x && this->dir_y == getPosition().y) this->movingOn = false;
+
+	//Collision with window
+	//left collision
+	if (this->getPosition().x - this->pixelSize.x / 2 <= 0.f) {
+		this->setPosition(this->pixelSize.x/2, this->getPosition().y);
+	}
+	//top collision
+	if (this->getPosition().y - this->pixelSize.y/2 <= 0.f){
+		this->setPosition(this->getPosition().x, this->pixelSize.y/2);
+	}
+	//bottom collision
+	if (this->getPosition().y + this->pixelSize.y >= this->screenH) {
+		this->setPosition(this->getPosition().x, this->screenH - this->pixelSize.y);
+	}
+	//right collision
+	if (this->getPosition().x + this->pixelSize.x/2 >= this->screenW) {
+		this->setPosition(this->screenW - this->pixelSize.x/2, this->getPosition().y);
+	}
 }
 
 //Where you specify the frame sizes for the animation transition

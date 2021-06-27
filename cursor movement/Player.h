@@ -7,15 +7,13 @@ private:
 	sf::Texture textureSheet;
 	sf::Clock animationTimer;
 	sf::Event ev;
+	sf::Vector2f pixelSize;
 
 	//Physics
 	sf::Vector2f velocity;
-	float velocityMax;
-	float velocityMin;
-	float acceleration;
-	float drag;
-	float gravity;
-	float velocityMaxY;
+	int screenW;
+	int screenH;
+
 	
 	//Core
 	void initVariables();
@@ -30,7 +28,7 @@ private:
 	bool animationSwitch;
 
 public:
-	Player();
+	Player(int screenW, int screenH);
 	virtual ~Player();
 
 	//Accessors

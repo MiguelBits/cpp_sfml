@@ -9,7 +9,7 @@ void Game::initWindow()
 
 void Game::initPlayer()
 {
-	this->player = new Player();
+	this->player = new Player(this->screenW, this->screenH);
 }
 void Game::initWorld()
 {
