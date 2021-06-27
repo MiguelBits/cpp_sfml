@@ -4,7 +4,7 @@
 void Game::initWindow()
 {
 	this->window.create(sf::VideoMode(this->screenW, this->screenH), "Not a Game!", sf::Style::Close | sf::Style::Titlebar);
-	this->window.setFramerateLimit(60);
+	this->window.setFramerateLimit(144);
 }
 
 void Game::initPlayer()
@@ -13,7 +13,7 @@ void Game::initPlayer()
 }
 void Game::initWorld()
 {
-	if (!this->worldBackgroundTex.loadFromFile("Textures/background.jpg"))
+	if (!this->worldBackgroundTex.loadFromFile("Textures/rift.jpg"))
 	{
 		std::cout << "ERROR::GAME::COULD NOT LOAD BACKGROUND TEXTURE" << "\n";
 	}
@@ -34,41 +34,74 @@ void Game::calculateMousePlayer() {
 	//std::cout << "mouse X is at: " << localPosition.x << "\n";
 	//std::cout << "mouse Y is at: " << localPosition.y << "\n";
 
-	float CO = localPosition.x - this->player->positionX;
-	float CA = localPosition.y - this->player->positionY;
+	//cateto oposto
+	float CO = localPosition.x - this->player->getPosition().x;
+	//cateto adjacente
+	float CA = localPosition.y - this->player->getPosition().y;
 
 	//std::cout << "CO : " << CO << "\n";
 	//std::cout << "CA : " << CA << "\n";
 
-	float coca = CO / CA;
-	float side = atan(coca) * 100;
+	float coca = atan(CO / CA) ;
+	float side = coca * 100;
 
+
+	//h**2 = ca**2 + co**2;
+	float hipotenusa = sqrt(pow(CA, 2) + pow(CO, 2));
+
+	float sin = CO / hipotenusa;
+	float cos = CA / hipotenusa;
+
+	//std::cout << "cos : " << cos << "\n";
+	//std::cout << "sin : " << sin << "\n";
+	
 	//std::cout << "ANGULO COCA: " << side << "\n";
 	if (120 <= side && side <= 160 && CA > 0) {
-		this->player->switchAnimationSide(1);
+		this->player->updateMovement(1);
+		//right positive
+		//this->player->move(cos,sin);
 	}
-	else if (0.000001 <= side && side <= 120 && CA > 0) {
-		this->player->switchAnimationSide(2);
+	if (0.000001 <= side && side <= 120 && CA > 0) {
+		this->player->updateMovement(2);
+		//down positive
+		//this->player->move(cos, sin);
+
 	}
-	else if (-0.000001 >= side && side >= -120 && CA > 0) {
-		this->player->switchAnimationSide(3);
+	if (-0.000001 >= side && side >= -120 && CA > 0) {
+		this->player->updateMovement(3);
+		//down negative
+		//this->player->move(-cos, -sin);
 	}
-	else if (-120 >= side && side >= -160 && CA > 0) {
-		this->player->switchAnimationSide(4);
+	if (-60 >= side && side >= -160 && CA > 0) {
+		this->player->updateMovement(4);
+		//left negative
+		//this->player->move(-cos, -sin);
+		
 	}
-	else if (120 <= side && side <= 160 && CA < 0) {
-		this->player->switchAnimationSide(5);
+	if (120 <= side && side <= 160 && CA < 0) {
+		this->player->updateMovement(5);
+		//left positive
+		//this->player->move(-1.0f,0);
+		
 	}
-	else if (0.000001 <= side && side <= 120 && CA < 0) {
-		this->player->switchAnimationSide(6);
+	if (0.000001 <= side && side <= 120 && CA < 0) {
+		this->player->updateMovement(6);
+		//up positive
+		//this->player->move(cos, sin);
 	}
-	else if (-0.000001 >= side && side >= -120 && CA < 0) {
-		this->player->switchAnimationSide(7);
+	if (-0.000001 >= side && side >= -120 && CA < 0) {
+		this->player->updateMovement(7);
+		//up negative
+		//this->player->move(-cos, -sin);
+
 	}
-	else if (-120 >= side && side >= -160 && CA < 0) {
-		this->player->switchAnimationSide(8);
+	if (-120 >= side && side >= -160 && CA < 0) {
+		this->player->updateMovement(8);
+		//right negative
+		//this->player->move(-cos, -sin);
 	}
 }
+
 Game::Game()
 {
 	this->initVariables();
@@ -84,14 +117,17 @@ Game::~Game()
 
 void Game::updatePlayer()
 {
+	//switch animation with mouse movement
+	calculateMousePlayer();
+
 	if (this->ev.type == sf::Event::MouseButtonPressed)
 	{
+
 		if (this->ev.mouseButton.button == sf::Mouse::Right)
 		{
-			sf::Vector2i localPosition = sf::Mouse::getPosition(this->window);
-			this->player->move(localPosition.x, localPosition.y);
-			//switch animation when click
-			calculateMousePlayer();
+				sf::Vector2i localPosition = sf::Mouse::getPosition(this->window);
+				sf::Vector2f mouseCoord = window.mapPixelToCoords(localPosition);
+				this->player->move(mouseCoord.x, mouseCoord.y);
 		}
 	}
 	this->player->update();

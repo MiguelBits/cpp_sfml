@@ -6,11 +6,23 @@ private:
 	sf::Sprite sprite;
 	sf::Texture textureSheet;
 	sf::Clock animationTimer;
+	sf::Event ev;
+
+	//Physics
+	sf::Vector2f velocity;
+	float velocityMax;
+	float velocityMin;
+	float acceleration;
+	float drag;
+	float gravity;
+	float velocityMaxY;
 	
+	//Core
 	void initVariables();
 	void initTexture();
 	void initSprite();
 	void initAnimations();
+	void initPhysics();
 
 	//Animation
 	short animState;
@@ -25,16 +37,24 @@ public:
 	const bool& getAnimSwitch();
 	const sf::Vector2f getPosition() const;
 
+	const sf::FloatRect getGlobalBounds() const;
+
 	//Variables
 	float movementSpeed;
 	float positionX;
 	float positionY;
+	float dir_x;
+	float dir_y;
+	bool movingOn;
 
 	//Functions
 	void move(const float dirX, const float dirY);
 	void resetAnimationTimer();
-	void switchAnimationSide(int side);
+	void setPosition(const float x, const float y);
+	void resetVelocityY();
+	void updatePhysics();
 	void updateAnimations();
+	void updateMovement(int side);
 	void update();
 	void render(sf::RenderTarget& target);
 };

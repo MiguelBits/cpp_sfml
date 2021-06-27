@@ -25,6 +25,7 @@ private:
 
 	void calculateMousePlayer();
 
+
 public:
 
 	Game();
