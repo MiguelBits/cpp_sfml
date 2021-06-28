@@ -1,7 +1,6 @@
 #pragma once
 #include"Player.h"
 #include "PlayerHUD.h"
-#include "Shop.h"
 
 class Game
 {
@@ -24,9 +23,9 @@ private:
 	//screen
 	int screenH;
 	int screenW;
-	//shop event
+
+	//for the shop event
 	bool shopOpen;
-	Shop* shop;
 
 	//World
 	sf::Texture worldBackgroundTex;

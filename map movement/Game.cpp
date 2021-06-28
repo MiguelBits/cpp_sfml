@@ -141,7 +141,7 @@ void Game::updatePlayer()
 	if (this->ev.type == sf::Event::MouseButtonPressed)
 	{
 
-		if (this->ev.mouseButton.button == sf::Mouse::Right)
+		if (this->ev.mouseButton.button == sf::Mouse::Right && !this->shopOpen)
 		{
 				sf::Vector2i localPosition = sf::Mouse::getPosition(this->window);
 				sf::Vector2f mouseCoord = window.mapPixelToCoords(localPosition);
