@@ -19,12 +19,20 @@ void Game::initHUD()
 }
 void Game::initWorld()
 {
-	if (!this->worldBackgroundTex.loadFromFile("Textures/space.jpg"))
+	this->B_clockStarted = false;
+
+	if (!this->worldBackgroundTex.loadFromFile("Textures/teste.jpg"))
 	{
 		std::cout << "ERROR::GAME::COULD NOT LOAD BACKGROUND TEXTURE" << "\n";
 	}
+	this->resetWorld();
 	this->worldBackground.setTexture(this->worldBackgroundTex);
-	//this->worldBackground.scale(0.8f,0.8f);
+
+}
+
+void Game::resetWorld()
+{
+	this->worldBackground.setPosition(0, -1000);
 }
 
 void Game::initVariables()
@@ -135,7 +143,7 @@ void Game::updateDt()
 
 void Game::updatePlayer()
 {
-	//switch animation with mouse movement
+	//switch animation with only the mouse movement
 	calculateMousePlayer();
 
 	if (this->ev.type == sf::Event::MouseButtonPressed)
@@ -148,6 +156,7 @@ void Game::updatePlayer()
 				this->player->move(mouseCoord.x, mouseCoord.y);
 		}
 	}
+
 	this->player->update();
 }
 
@@ -172,23 +181,27 @@ void Game::updateMap()
 	//Collision with window and map movement and player recenter
 	//left collision
 	if (this->player->getPosition().x - this->player->pixelSize.x <= 0.f) {
-		this->player->setPosition(this->player->pixelSize.x*2, this->player->getPosition().y);
-		this->worldBackground.setPosition(this->worldBackground.getPosition().x+150, this->worldBackground.getPosition().y);
+		this->player->setPosition(this->screenW/2, this->player->getPosition().y);
+		this->worldBackground.setPosition(this->worldBackground.getPosition().x+ this->screenW / 2, this->worldBackground.getPosition().y);
+		this->player->movingOn = false;
 	}
 	//top collision
 	if (this->player->getPosition().y - this->player->pixelSize.y <= 0.f) {
 		this->player->setPosition(this->player->getPosition().x, 300);
 		this->worldBackground.setPosition(this->worldBackground.getPosition().x, this->worldBackground.getPosition().y + 300);
+		this->player->movingOn = false;
 	}
 	//bottom collision
 	if (this->player->getPosition().y + this->player->pixelSize.y >= this->screenH - 150) {
-		this->player->setPosition(this->player->getPosition().x, this->screenH - this->player->pixelSize.y - 300);
-		this->worldBackground.setPosition(this->worldBackground.getPosition().x, this->worldBackground.getPosition().y-150);
+		this->player->setPosition(this->player->getPosition().x, this->screenH/2);
+		this->worldBackground.setPosition(this->worldBackground.getPosition().x, this->worldBackground.getPosition().y - 300);
+		this->player->movingOn = false;
 	}
 	//right collision
 	if (this->player->getPosition().x + this->player->pixelSize.x >= this->screenW) {
-		this->player->setPosition(this->screenW - this->player->pixelSize.x*2, this->player->getPosition().y);
-		this->worldBackground.setPosition(this->worldBackground.getPosition().x - 150, this->worldBackground.getPosition().y);
+		this->player->setPosition(this->screenW / 2, this->player->getPosition().y);
+		this->worldBackground.setPosition(this->worldBackground.getPosition().x - 900, this->worldBackground.getPosition().y);
+		this->player->movingOn = false;
 	}
 		
 }
@@ -209,9 +222,37 @@ void Game::update()
 		if (this->ev.type == sf::Event::KeyPressed && this->ev.key.code == sf::Keyboard::P) {
 			if (this->shopOpen) this->shopOpen = false;
 			else this->shopOpen = true;
-
-			std::cout << this->shopOpen << "PPP FODASSE\n";
 		}
+
+		//B for recall to base button
+		if (this->ev.type == sf::Event::KeyPressed && this->ev.key.code == sf::Keyboard::B) {
+			//std::cout << "\nPlayer is at X: " << this->player->getPosition().x;
+			//std::cout << "Player is at Y: " << this->player->getPosition().y;
+			this->player->movingOn = false;
+
+			//start clock
+			this->B_Clock.restart();
+			this->B_clockStarted = true;
+			this->player->setAnimationRecall();
+			
+		}
+	}
+
+	//std::cout << "Clock \n" << this->B_SecondsSinceRecallStarted;
+	
+
+	//and if recall animation has not stopped
+	if (this->B_clockStarted) {
+		//get current elapsed time of frame
+		this->B_SecondsSinceRecallStarted = this->B_Clock.getElapsedTime().asSeconds();
+		if (this->player->movingOn) this->B_clockStarted = false;
+	}
+	//if 8 seconds have passed since recall started
+	if (this->B_SecondsSinceRecallStarted >= 8 && this->B_SecondsSinceRecallStarted <= 10) {
+		this->resetWorld();
+		this->player->setPosition(700, 480);
+		this->B_clockStarted = false;
+		this->B_SecondsSinceRecallStarted = 0;
 	}
 
 	this->updatePlayer();

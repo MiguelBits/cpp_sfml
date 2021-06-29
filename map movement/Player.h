@@ -1,5 +1,5 @@
 #pragma once
-enum PLAYER_ANIMATION_STATES { IDLE = 0, MOVING_LEFT, MOVING_RIGHT, MOVING_UP, MOVING_DOWN};
+enum PLAYER_ANIMATION_STATES { IDLE = 0, MOVING_LEFT, MOVING_RIGHT, MOVING_UP, MOVING_DOWN, RECALL};
 class Player
 {
 private:
@@ -22,11 +22,17 @@ private:
 	void initPhysics();
 
 	//Animation
-	short animState;
 	sf::IntRect currentFrame;
 	bool animationSwitch;
+	short animState;
+
+	
 
 public:
+	//Animation
+	short getAnimState();
+	void setAnimationRecall();
+
 	Player(int screenW, int screenH);
 	virtual ~Player();
 

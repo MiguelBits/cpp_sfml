@@ -15,10 +15,10 @@ private:
 	sf::Clock dtClock;
 	float dt;
 
-
-	//settings stuff
-	std::map<std::string, int> supportedKeys;
-	float gridSize;
+	sf::Clock B_Clock;
+	// Record elapsed time of
+	float B_SecondsSinceRecallStarted;
+	bool B_clockStarted;
 
 	//screen
 	int screenH;
@@ -41,7 +41,7 @@ private:
 	void initHUD();
 	void initVariables();
 	void initWorld();
-	void initShop();
+	void resetWorld();
 
 	void calculateMousePlayer();
 

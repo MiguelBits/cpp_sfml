@@ -65,6 +65,16 @@ Player::~Player()
 
 }
 
+short Player::getAnimState()
+{
+	return this->animState;
+}
+
+void Player::setAnimationRecall()
+{
+	this->animState = PLAYER_ANIMATION_STATES::RECALL;
+}
+
 const bool Player::getAnimSwitch()
 {
 	bool anim_switch = this->animationSwitch;
