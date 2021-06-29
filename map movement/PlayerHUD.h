@@ -16,6 +16,11 @@ private:
 	sf::RectangleShape hpBarInner;
 	sf::RectangleShape hpBarBack;
 	sf::RectangleShape skillsBar;
+	sf::RectangleShape Qskill;
+	sf::RectangleShape Wskill;
+	sf::RectangleShape Eskill;
+	sf::RectangleShape Rskill;
+
 	sf::RectangleShape mapBar;
 
 	void initFont();
@@ -29,6 +34,7 @@ public:
 	void updateHPBar();
 	void update(const float& dt);
 	void renderShop(sf::RenderTarget& target);
+	void renderAbilitiesCooldowns(sf::RenderTarget& target);
 	void renderHUD(sf::RenderTarget& target);
 	void render(sf::RenderTarget& target,bool shopOpen);
 

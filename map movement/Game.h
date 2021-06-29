@@ -42,8 +42,10 @@ private:
 	void initVariables();
 	void initWorld();
 	void resetWorld();
-
+	
+	//player interaction functions
 	void calculateMousePlayer();
+	void animationSkillInput(sf::Event ev);
 
 
 public:
@@ -52,7 +54,7 @@ public:
 	virtual ~Game();
 
 	//Functions
-	void endApplication();
+	
 	//updates
 	void updateDt();
 	void updatePlayer();
@@ -62,7 +64,6 @@ public:
 	void renderPlayer();
 	void renderWorld();
 	void renderHUD();
-	void renderShop();
 	void render();
 	
 	const sf::RenderWindow& getWindow() const;

@@ -4,7 +4,7 @@
 
 void PlayerHUD::initFont()
 {
-	this->font.loadFromFile("Fonts\open-sans\OpenSans-Regular.ttf");
+	this->font.loadFromFile("Fonts/open-sans/OpenSans-Regular.ttf");
 }
 
 void PlayerHUD::initHUD(int screenW, int screenH)
@@ -15,7 +15,7 @@ void PlayerHUD::initHUD(int screenW, int screenH)
 
 	//Shop Rectangle
 	this->shop.setSize(sf::Vector2f(width, height));
-	this->shop.setFillColor(sf::Color(sf::Color::Red));
+	this->shop.setFillColor(sf::Color(sf::Color::Blue));
 	this->shop.setPosition(screenW/10, screenH/8);
 	this->shop.scale(2,8);
 
@@ -34,11 +34,26 @@ void PlayerHUD::initHUD(int screenW, int screenH)
 	this->hpBarBack.setFillColor(sf::Color(sf::Color::White));
 	this->hpBarBack.setPosition(this->HUD.getPosition().x + 50, this->HUD.getPosition().y + 50);
 	
-
 	//Skills bar
 	this->skillsBar.setSize(sf::Vector2f(width - 100, height/1.25f));
 	this->skillsBar.setFillColor(sf::Color(sf::Color::Green));
 	this->skillsBar.setPosition(this->HUD.getPosition().x+50, this->HUD.getPosition().y - 30);
+	//Q ability
+	this->Qskill.setSize(sf::Vector2f(100,100));
+	this->Qskill.setFillColor(sf::Color::White);
+	this->Qskill.setPosition(750, 870);
+	//W ability
+	this->Wskill.setSize(sf::Vector2f(100, 100));
+	this->Wskill.setFillColor(sf::Color::White);
+	this->Wskill.setPosition(870, 870);
+	//E ability
+	this->Eskill.setSize(sf::Vector2f(100, 100));
+	this->Eskill.setFillColor(sf::Color::White);
+	this->Eskill.setPosition(990, 870);
+	//R ability
+	this->Rskill.setSize(sf::Vector2f(100, 100));
+	this->Rskill.setFillColor(sf::Color::White);
+	this->Rskill.setPosition(1200, 870);
 
 	//Map bar
 	int mapScale = 250;
@@ -73,7 +88,13 @@ void PlayerHUD::renderShop(sf::RenderTarget& target)
 {
 	target.draw(this->shop);
 }
-
+void PlayerHUD::renderAbilitiesCooldowns(sf::RenderTarget& target)
+{
+	target.draw(this->Qskill);
+	target.draw(this->Wskill);
+	target.draw(this->Eskill);
+	target.draw(this->Rskill);
+}
 void PlayerHUD::renderHUD(sf::RenderTarget& target)
 {
 	//order to draw matters
@@ -86,6 +107,9 @@ void PlayerHUD::renderHUD(sf::RenderTarget& target)
 
 void PlayerHUD::render(sf::RenderTarget& target, bool shopOpen)
 {
+	
 	this->renderHUD(target);
 	if (shopOpen) this->renderShop(target);
+	this->renderAbilitiesCooldowns(target);
+	
 }

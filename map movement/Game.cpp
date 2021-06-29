@@ -1,6 +1,10 @@
 #include"stdafx.h"
 #include "Game.h"
 
+
+/// <summary>
+/// /////////////////////////////////////////				INIT
+/// </summary>
 void Game::initWindow()
 {
 	this->window.create(sf::VideoMode(this->screenW, this->screenH), "Not a Game!", sf::Style::Close | sf::Style::Titlebar);
@@ -41,6 +45,10 @@ void Game::initVariables()
 	this->screenH = 1080;
 }
 
+
+/// <summary>
+/// /////////////////////////////////////////				PLAYER INTERACTION WITH MAP
+/// </summary>
 
 void Game::calculateMousePlayer() {
 	//Mouse relative to window position
@@ -116,6 +124,35 @@ void Game::calculateMousePlayer() {
 	}
 }
 
+void Game::animationSkillInput(sf::Event ev)
+{
+	//SHOP
+	//Open shop with P button, close if shop is open
+	if (this->ev.type == sf::Event::KeyPressed && this->ev.key.code == sf::Keyboard::P) {
+		if (this->shopOpen) this->shopOpen = false;
+		else this->shopOpen = true;
+	}
+	//RECALL
+	//B for recall to base button
+	if (this->ev.type == sf::Event::KeyPressed && this->ev.key.code == sf::Keyboard::B) {
+		//std::cout << "\nPlayer is at X: " << this->player->getPosition().x;
+		//std::cout << "Player is at Y: " << this->player->getPosition().y;
+		this->player->movingOn = false;
+
+		//start clock
+		this->B_Clock.restart();
+		this->B_clockStarted = true;
+		this->player->setAnimationB(true);
+	}
+	//Q ability
+	//if Q is pressed
+	if (this->ev.type == sf::Event::KeyPressed && this->ev.key.code == sf::Keyboard::Q) {
+		sf::Vector2i localPosition = sf::Mouse::getPosition(this->window);
+		sf::Vector2f mouseCoord = window.mapPixelToCoords(localPosition);
+		this->player->useQability(mouseCoord);
+	}
+}
+
 Game::Game()
 {
 	this->initVariables();
@@ -133,6 +170,9 @@ Game::~Game()
 }
 
 
+/// <summary>
+/// /////////////////////////////////////////				UPDATE
+/// </summary>
 void Game::updateDt()
 {
 	//updates the dt variable w the time it takes to update and render one frame;
@@ -218,34 +258,25 @@ void Game::update()
 		else if (this->ev.type == sf::Event::KeyPressed && this->ev.key.code == sf::Keyboard::Escape)
 			this->window.close();
 
-		//Open shop with P button, close if shop is open
-		if (this->ev.type == sf::Event::KeyPressed && this->ev.key.code == sf::Keyboard::P) {
-			if (this->shopOpen) this->shopOpen = false;
-			else this->shopOpen = true;
-		}
-
-		//B for recall to base button
-		if (this->ev.type == sf::Event::KeyPressed && this->ev.key.code == sf::Keyboard::B) {
-			//std::cout << "\nPlayer is at X: " << this->player->getPosition().x;
-			//std::cout << "Player is at Y: " << this->player->getPosition().y;
-			this->player->movingOn = false;
-
-			//start clock
-			this->B_Clock.restart();
-			this->B_clockStarted = true;
-			this->player->setAnimationRecall();
-			
-		}
+		//check for player inputs
+		this->animationSkillInput(this->ev);
+		
 	}
 
 	//std::cout << "Clock \n" << this->B_SecondsSinceRecallStarted;
 	
 
-	//and if recall animation has not stopped
+	//if b has been pressed to start clock
 	if (this->B_clockStarted) {
 		//get current elapsed time of frame
 		this->B_SecondsSinceRecallStarted = this->B_Clock.getElapsedTime().asSeconds();
-		if (this->player->movingOn) this->B_clockStarted = false;
+
+		//and if recall animation has not stopped
+		if (this->player->movingOn) {
+			this->B_clockStarted = false;
+			//stop chanelling animation
+			this->player->setAnimationB(false);
+		}
 	}
 	//if 8 seconds have passed since recall started
 	if (this->B_SecondsSinceRecallStarted >= 8 && this->B_SecondsSinceRecallStarted <= 10) {
@@ -253,6 +284,8 @@ void Game::update()
 		this->player->setPosition(700, 480);
 		this->B_clockStarted = false;
 		this->B_SecondsSinceRecallStarted = 0;
+		//stop chanelling animation
+		this->player->setAnimationB(false);
 	}
 
 	this->updatePlayer();
@@ -260,6 +293,9 @@ void Game::update()
 
 }
 
+/// <summary>
+/// /////////////////////////////////////////				RENDER
+/// </summary>
 void Game::renderPlayer()
 {
 	this->player->render(this->window);
