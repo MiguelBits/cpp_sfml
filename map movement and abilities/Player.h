@@ -36,6 +36,7 @@ private:
 
 
 public:
+	sf::RectangleShape hitbox;
 	struct Ability {
 		bool isActive;
 		PLAYER_ANIMATION_STATES key;

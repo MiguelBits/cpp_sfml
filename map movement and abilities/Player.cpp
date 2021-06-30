@@ -11,11 +11,14 @@ void Player::initVariables()
 	this->animState = PLAYER_ANIMATION_STATES::IDLE;
 	this->pixelSize.x = 100;
 	this->pixelSize.y = 100;
+	//init hitbox
+	this->hitbox.setSize(sf::Vector2f(40, 100));
+	this->hitbox.setFillColor(sf::Color::White);
 }
 
 void Player::initTexture()
 {
-	if (!this->textureSheet.loadFromFile("Textures/riven.png"))
+	if (!this->textureSheet.loadFromFile("Textures/rivenTest.png"))
 	{
 		std::cout << "ERROR::PLAYER::Could not load the player sheet!" << "\n";
 	}
@@ -170,20 +173,26 @@ void Player::useQability(sf::Vector2f mouseCoord)
 }
 void Player::useWability()
 {
-	this->Wability.isActive = true;
-	this->Wability.isAvailable = false;
+	if (this->Wability.isAvailable) {
+		this->Wability.isActive = true;
+		this->Wability.isAvailable = false;
+	}
 }
 void Player::useEability(sf::Vector2f mouseCoord)
 {
-	this->Eability.isActive = true;
-	this->Eability.direction = mouseCoord;
-	this->Eability.isAvailable = false;
+	if (this->Eability.isAvailable) {
+		this->Eability.isActive = true;
+		this->Eability.direction = mouseCoord;
+		this->Eability.isAvailable = false;
+	}
 }
 void Player::useRability(sf::Vector2f mouseCoord)
 {
-	this->Rability.isActive = true;
-	this->Rability.direction = mouseCoord;
-	this->Rability.isAvailable = false;
+	if (this->Rability.isAvailable) {
+		this->Rability.isActive = true;
+		this->Rability.direction = mouseCoord;
+		this->Rability.isAvailable = false;
+	}
 }
 
 /// <summary>
@@ -326,11 +335,21 @@ void Player::updateAnimations()
 	//ABILITIES
 	else if (this->animState == PLAYER_ANIMATION_STATES::Q)
 	{
-		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.1f || this->getAnimSwitch())
+		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.1f)
 		{
-			this->currentFrame.top = 400.f;
+			if (this->lastAnimState == PLAYER_ANIMATION_STATES::MOVING_LEFT) {
+				this->currentFrame.top = 400.f;
+			}
+			else if (this->lastAnimState == PLAYER_ANIMATION_STATES::MOVING_RIGHT) {
+				this->currentFrame.top = 500.f;
+			}
+			else if (this->lastAnimState == PLAYER_ANIMATION_STATES::MOVING_UP) {
+				this->currentFrame.top = 600.f;
+			}
+			else if (this->lastAnimState == PLAYER_ANIMATION_STATES::MOVING_DOWN) {
+				this->currentFrame.top = 700.f;
+			}
 			this->currentFrame.left += 100.f;
-	
 			if (this->currentFrame.left > 600.f) {
 				this->currentFrame.left = 0;
 
@@ -348,40 +367,61 @@ void Player::updateAnimations()
 	{
 		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.1f || this->getAnimSwitch())
 		{
-			this->currentFrame.top = 100.f;
+			this->currentFrame.top = 400.f;
 			this->currentFrame.left += 100.f;
-			if (this->currentFrame.left > 600.f)
+
+			if (this->currentFrame.left > 600.f) {
 				this->currentFrame.left = 0;
+
+				this->Wability.isActive = false;
+				//return to last animation displayed
+				this->animState = this->lastAnimState;
+			}
 
 			this->animationTimer.restart();
 			this->sprite.setTextureRect(this->currentFrame);
+
 		}
 	}
 	else if (this->animState == PLAYER_ANIMATION_STATES::E)
 	{
 		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.1f || this->getAnimSwitch())
 		{
-			this->currentFrame.top = 100.f;
+			this->currentFrame.top = 400.f;
 			this->currentFrame.left += 100.f;
-			if (this->currentFrame.left > 600.f)
+
+			if (this->currentFrame.left > 600.f) {
 				this->currentFrame.left = 0;
+
+				this->Eability.isActive = false;
+				//return to last animation displayed
+				this->animState = this->lastAnimState;
+			}
 
 			this->animationTimer.restart();
 			this->sprite.setTextureRect(this->currentFrame);
+
 		}
 	}
 	else if (this->animState == PLAYER_ANIMATION_STATES::R)
 	{
-	if (this->animationTimer.getElapsedTime().asSeconds() >= 0.1f || this->getAnimSwitch())
-	{
-		this->currentFrame.top = 100.f;
-		this->currentFrame.left += 100.f;
-		if (this->currentFrame.left > 600.f)
-			this->currentFrame.left = 0;
+		if (this->animationTimer.getElapsedTime().asSeconds() >= 0.1f || this->getAnimSwitch())
+		{
+			this->currentFrame.top = 400.f;
+			this->currentFrame.left += 100.f;
 
-		this->animationTimer.restart();
-		this->sprite.setTextureRect(this->currentFrame);
-	}
+			if (this->currentFrame.left > 600.f) {
+				this->currentFrame.left = 0;
+
+				this->Rability.isActive = false;
+				//return to last animation displayed
+				this->animState = this->lastAnimState;
+			}
+
+			this->animationTimer.restart();
+			this->sprite.setTextureRect(this->currentFrame);
+
+		}
 	}
 	else
 		this->animationTimer.restart();
@@ -410,7 +450,7 @@ void Player::updateMovement(int side)
 void Player::updateAbilities()
 {
 	//set animations for abilities, start cooldown
-	std::cout << "clock is \n" << this->Qability.SecondsSinceTimerStarted;
+	//std::cout << "clock is \n" << this->Qability.SecondsSinceTimerStarted;
 	//Q was pressed
 	if (this->Qability.isActive) {
 		this->animState = this->Qability.key;
@@ -424,18 +464,44 @@ void Player::updateAbilities()
 			this->Qability.SecondsSinceTimerStarted = 0;
 		}
 	}
-
+	//W was pressed
 	if (this->Wability.isActive) {
-		this->Wability.cooldownTimer.restart();
 		this->animState = this->Wability.key;
+		this->Wability.cooldownTimer.restart();
 	}
+	//W is on cooldown
+	else if (!this->Wability.isAvailable) {
+		this->Wability.SecondsSinceTimerStarted = this->Wability.cooldownTimer.getElapsedTime().asSeconds();
+		if (this->Wability.maxSecondsCooldown <= this->Wability.SecondsSinceTimerStarted) {
+			this->Wability.isAvailable = true;
+			this->Wability.SecondsSinceTimerStarted = 0;
+		}
+	}
+	//E was pressed
 	if (this->Eability.isActive) {
-		this->Eability.cooldownTimer.restart();
 		this->animState = this->Eability.key;
+		this->Eability.cooldownTimer.restart();
 	}
+	//E is on cooldown
+	else if (!this->Eability.isAvailable) {
+		this->Eability.SecondsSinceTimerStarted = this->Eability.cooldownTimer.getElapsedTime().asSeconds();
+		if (this->Eability.maxSecondsCooldown <= this->Eability.SecondsSinceTimerStarted) {
+			this->Eability.isAvailable = true;
+			this->Eability.SecondsSinceTimerStarted = 0;
+		}
+	}
+	//R was pressed
 	if (this->Rability.isActive) {
-		this->Rability.cooldownTimer.restart();
 		this->animState = this->Rability.key;
+		this->Rability.cooldownTimer.restart();
+	}
+	//R is on cooldown
+	else if (!this->Rability.isAvailable) {
+		this->Rability.SecondsSinceTimerStarted = this->Rability.cooldownTimer.getElapsedTime().asSeconds();
+		if (this->Rability.maxSecondsCooldown <= this->Rability.SecondsSinceTimerStarted) {
+			this->Rability.isAvailable = true;
+			this->Rability.SecondsSinceTimerStarted = 0;
+		}
 	}
 }
 
@@ -453,11 +519,15 @@ void Player::update()
 void Player::render(sf::RenderTarget& target)
 {
 	target.draw(this->sprite);
-	
+
+	//hitbox
+	this->hitbox.setPosition(this->sprite.getPosition().x-20, this->sprite.getPosition().y - 50);
+	//target.draw(hitbox);
+	//
 	//CIRCLE FOR FIXING POSITION
 	/*sf::CircleShape circ;
 	circ.setFillColor(sf::Color::Red);
-	circ.setRadius(150);
-	circ.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y-150);
+	circ.setRadius(10);
+	circ.setPosition(this->sprite.getPosition().x-50, this->sprite.getPosition().y-50);
 	target.draw(circ);*/
 }
